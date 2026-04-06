@@ -1,0 +1,35 @@
+@"
+defaults:
+  - base
+
+experiment:
+  name: full_ablation_v1
+  synthetic: true
+  conditions:
+    - name: centralized
+      federated: {enabled: false}
+      ewc:       {enabled: false}
+      pinn:      {enabled: false}
+      marl:      {enabled: false}
+    - name: federated_only
+      federated: {enabled: true}
+      ewc:       {enabled: false}
+      pinn:      {enabled: false}
+      marl:      {enabled: false}
+    - name: federated_ewc
+      federated: {enabled: true}
+      ewc:       {enabled: true}
+      pinn:      {enabled: false}
+      marl:      {enabled: false}
+    - name: federated_ewc_pinn
+      federated: {enabled: true}
+      ewc:       {enabled: true}
+      pinn:      {enabled: true}
+      marl:      {enabled: false}
+    - name: full_model
+      federated: {enabled: true}
+      ewc:       {enabled: true}
+      pinn:      {enabled: true}
+      marl:      {enabled: true}
+"@ | Set-Content configs\experiment.yaml
+echo "done"

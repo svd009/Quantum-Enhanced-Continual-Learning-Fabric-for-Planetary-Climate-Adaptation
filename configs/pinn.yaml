@@ -1,0 +1,18 @@
+@"
+defaults:
+  - base
+
+pinn:
+  enabled: true
+  pde_weight: 0.1
+  architecture:
+    hidden_dims: [256, 256, 128, 64]
+    activation: tanh
+    fourier_features: true
+    fourier_scale: 10.0
+  physics:
+    enforce_energy_conservation: true
+    enforce_mass_conservation: true
+    continuity_weight: 0.05
+"@ | Set-Content configs\pinn.yaml
+echo "done"
