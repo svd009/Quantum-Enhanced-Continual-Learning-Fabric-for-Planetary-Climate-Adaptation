@@ -1,31 +1,47 @@
 # Quantum-Enhanced Continual Learning Fabric for Planetary Climate Adaptation
 
-A production-grade federated learning system for planetary climate forecasting, built for applied scientist roles at top-tier ML companies.
+> Federated continual learning system for planetary climate forecasting — combining Physics-Informed Neural Networks, Elastic Weight Consolidation, and Multi-Agent RL across distributed geographic nodes.
 
-## What This Project Does
+---
 
-Trains climate forecasting models across geographically distributed nodes (North America, Europe, Asia-Pacific) without centralizing raw data, while preventing catastrophic forgetting as climate distributions shift over time.
+## Overview
 
-## Architecture
+Most climate models are trained on centralized data. This project takes a different approach — training across **3 geographic regions simultaneously** (North America, Europe, Asia-Pacific) without ever moving raw data, while actively preventing the model from forgetting earlier climate patterns as distributions shift over time.
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| Federated Learning | FedAvg across 3 regional nodes | Train without centralizing data |
-| Continual Learning | Elastic Weight Consolidation (EWC) | Prevent forgetting across time periods |
-| Physics-Informed ML | PINN with PDE residual loss | Enforce mass + energy conservation |
-| Multi-Agent RL | PPO agents per region | Adaptive regional coordination |
+Built to production-grade standards with a full ablation suite, reproducible configs, and AWS SageMaker integration.
+
+---
+
+## Core Components
+
+**Federated Learning (FedAvg)**
+Regional nodes train locally. Only model weights are shared — never raw climate data.
+
+**Continual Learning (EWC)**
+Elastic Weight Consolidation prevents catastrophic forgetting as the model learns across time periods.
+
+**Physics-Informed Neural Network (PINN)**
+PDE residual losses enforce mass and energy conservation — the model cannot violate atmospheric physics.
+
+**Multi-Agent RL (MARL)**
+One PPO agent per region coordinates adaptive responses to local climate shifts.
+
+---
 
 ## Ablation Matrix
 
-| Condition | Federated | EWC | PINN | MARL |
-|-----------|-----------|-----|------|------|
-| Centralized baseline | — | — | — | — |
-| + Federated | ✓ | — | — | — |
-| + EWC | ✓ | ✓ | — | — |
-| + PINN | ✓ | ✓ | ✓ | — |
-| Full model | ✓ | ✓ | ✓ | ✓ |
+| Condition            | Federated | EWC | PINN | MARL |
+|----------------------|:---------:|:---:|:----:|:----:|
+| Centralized baseline |     —     |  —  |  —   |  —   |
+| + Federated          |     ✓     |  —  |  —   |  —   |
+| + EWC                |     ✓     |  ✓  |  —   |  —   |
+| + PINN               |     ✓     |  ✓  |  ✓   |  —   |
+| Full model           |     ✓     |  ✓  |  ✓   |  ✓   |
+
+---
 
 ## Project Structure
+```text
 ├── src/
 │   ├── data/           # ERA5 + synthetic data loaders
 │   ├── models/         # PINN backbone and loss functions
@@ -38,6 +54,9 @@ Trains climate forecasting models across geographically distributed nodes (North
 ├── notebooks/          # Exploration and results analysis
 ├── tests/              # Unit + integration tests
 └── results/            # Checkpoints, figures, logs
+```
+
+---
 
 ## Quickstart
 ```bash
@@ -51,22 +70,36 @@ python scripts/run_experiment.py --config configs/experiment.yaml --synthetic
 python scripts/run_ablation.py --output results/ablation_table.csv
 ```
 
+---
+
 ## Data Sources
 
-- [ERA5 Reanalysis](https://cds.climate.copernicus.eu/) — hourly climate variables 1940–present
-- [CMIP6 Projections](https://esgf-node.llnl.gov/projects/cmip6/) — future climate scenarios
-- Synthetic generator included for local development (no API key required)
+| Source | Description |
+|--------|-------------|
+| [ERA5 Reanalysis](https://cds.climate.copernicus.eu/) | Hourly climate variables 1940–present |
+| [CMIP6 Projections](https://esgf-node.llnl.gov/projects/cmip6/) | Future climate scenarios |
+| Synthetic generator | Built-in, no API key required |
+
+---
 
 ## Tech Stack
 
-- **PyTorch 2.0+** — model training
-- **xarray** — climate data handling
-- **OmegaConf** — hierarchical config management
-- **AWS SageMaker** — multi-node federated runs (Week 4+)
+| Layer | Technology |
+|-------|-----------|
+| Model training | PyTorch 2.0+ |
+| Climate data | xarray, netCDF4 |
+| Federated learning | FedAvg (custom) |
+| Config management | OmegaConf |
+| Cloud training | AWS SageMaker (Week 4+) |
+| Experiment tracking | Weights & Biases |
+
+---
 
 ## Key Metrics
 
-- Forecast RMSE per region
-- Backward Transfer (forgetting metric)
-- Regional Fairness Score
-- Communication cost per federated round
+| Metric | Description |
+|--------|-------------|
+| Forecast RMSE | Per-region temperature and precipitation error |
+| Backward Transfer | Measures catastrophic forgetting across time periods |
+| Regional Fairness | Variance in performance across geographic nodes |
+| Communication Cost | Bytes exchanged per federated round |
