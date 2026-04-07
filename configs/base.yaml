@@ -1,38 +1,13 @@
 project:
   name: fedclimate
   seed: 42
-  device: cpu  # switch to cuda if you have a GPU
-
-data:
-  regions:
-    - name: north_america
-      lat_range: [15, 72]
-      lon_range: [-170, -50]
-    - name: europe
-      lat_range: [35, 72]
-      lon_range: [-25, 45]
-    - name: asia_pacific
-      lat_range: [-10, 60]
-      lon_range: [60, 180]
-  variables:
-    - 2m_temperature
-    - total_precipitation
-    - surface_pressure
-    - 10m_u_component_of_wind
-    - 10m_v_component_of_wind
-  years_train: [1980, 2010]
-  years_val:   [2010, 2015]
-  years_test:  [2015, 2020]
-  spatial_resolution: 2.0
-  temporal_resolution: monthly
-
+  device: cpu
 training:
   epochs: 100
   batch_size: 32
-  learning_rate: 1.0e-3
-  weight_decay: 1.0e-4
+  learning_rate: 0.001
+  weight_decay: 0.0001
   scheduler: cosine
-
 logging:
   use_wandb: false
   log_every: 10

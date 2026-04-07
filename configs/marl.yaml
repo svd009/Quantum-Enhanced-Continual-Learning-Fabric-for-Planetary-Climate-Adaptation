@@ -1,7 +1,5 @@
-@"
-defaults:
-  - base
-
+$Utf8 = New-Object System.Text.UTF8Encoding $False
+$content = @'
 marl:
   enabled: true
   algorithm: ppo
@@ -16,5 +14,6 @@ marl:
     forecast_accuracy_weight: 0.6
     fairness_weight: 0.2
     energy_weight: 0.2
-"@ | Set-Content configs\marl.yaml
+'@
+[System.IO.File]::WriteAllText("$PWD\configs\marl.yaml", $content, $Utf8)
 echo "done"

@@ -1,35 +1,35 @@
-@"
-defaults:
-  - base
-
-experiment:
-  name: full_ablation_v1
-  synthetic: true
-  conditions:
-    - name: centralized
-      federated: {enabled: false}
-      ewc:       {enabled: false}
-      pinn:      {enabled: false}
-      marl:      {enabled: false}
-    - name: federated_only
-      federated: {enabled: true}
-      ewc:       {enabled: false}
-      pinn:      {enabled: false}
-      marl:      {enabled: false}
-    - name: federated_ewc
-      federated: {enabled: true}
-      ewc:       {enabled: true}
-      pinn:      {enabled: false}
-      marl:      {enabled: false}
-    - name: federated_ewc_pinn
-      federated: {enabled: true}
-      ewc:       {enabled: true}
-      pinn:      {enabled: true}
-      marl:      {enabled: false}
-    - name: full_model
-      federated: {enabled: true}
-      ewc:       {enabled: true}
-      pinn:      {enabled: true}
-      marl:      {enabled: true}
-"@ | Set-Content configs\experiment.yaml
-echo "done"
+project:
+  name: fedclimate
+  seed: 42
+  device: cpu
+federated:
+  enabled: true
+  num_rounds: 5
+  num_clients: 3
+  clients_per_round: 3
+  local_epochs: 2
+  aggregation: fedavg
+ewc:
+  enabled: true
+  lambda_: 5000
+  fisher_samples: 50
+pinn:
+  enabled: true
+  pde_weight: 0.1
+  architecture:
+    hidden_dims: [64, 64, 32]
+    activation: tanh
+    fourier_features: true
+    fourier_scale: 10.0
+  physics:
+    continuity_weight: 0.05
+training:
+  epochs: 100
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: cosine
+logging:
+  use_wandb: false
+  log_every: 10
+  save_every: 25

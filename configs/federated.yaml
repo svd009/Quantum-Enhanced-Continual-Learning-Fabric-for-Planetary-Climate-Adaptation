@@ -1,18 +1,34 @@
-@"
-defaults:
-  - base
+$Utf8 = New-Object System.Text.UTF8Encoding $False
+$content = @'
+project:
+  name: fedclimate
+  seed: 42
+  device: cpu
 
 federated:
   enabled: true
-  num_rounds: 50
+  num_rounds: 5
   num_clients: 3
   clients_per_round: 3
-  local_epochs: 5
+  local_epochs: 2
   aggregation: fedavg
 
 ewc:
   enabled: true
-  lambda: 5000
-  fisher_samples: 200
-"@ | Set-Content configs\federated.yaml
+  lambda_: 5000
+  fisher_samples: 50
+
+training:
+  epochs: 100
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler: cosine
+
+logging:
+  use_wandb: false
+  log_every: 10
+  save_every: 25
+'@
+[System.IO.File]::WriteAllText("$PWD\configs\federated.yaml", $content, $Utf8)
 echo "done"
