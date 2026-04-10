@@ -1,7 +1,12 @@
 # Quantum-Enhanced Continual Learning Fabric for Planetary Climate Adaptation
 
-> A production-grade federated continual learning system for planetary climate forecasting — combining Physics-Informed Neural Networks, Elastic Weight Consolidation, and Multi-Agent Reinforcement Learning across distributed geographic nodes.
+> > A production-grade federated continual learning system for planetary climate forecasting — combining Physics-Informed Neural Networks, Elastic Weight Consolidation, and Multi-Agent Reinforcement Learning across distributed geographic nodes.
 
+![CI](https://github.com/svd009/Quantum-Enhanced-Continual-Learning-Fabric-for-Planetary-Climate-Adaptation/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/python-3.11-blue.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)
+![Tests](https://img.shields.io/badge/tests-29%20passing-brightgreen.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 ---
 
 ## Overview
