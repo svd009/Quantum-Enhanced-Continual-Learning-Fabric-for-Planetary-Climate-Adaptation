@@ -1,6 +1,6 @@
 # Quantum-Enhanced Continual Learning Fabric for Planetary Climate Adaptation
 
-> > A production-grade federated continual learning system for planetary climate forecasting — combining Physics-Informed Neural Networks, Elastic Weight Consolidation, and Multi-Agent Reinforcement Learning across distributed geographic nodes.
+> A production-grade federated continual learning system for planetary climate forecasting — combining Physics-Informed Neural Networks, Elastic Weight Consolidation, and Multi-Agent Reinforcement Learning across distributed geographic nodes.
 
 ![CI](https://github.com/svd009/Quantum-Enhanced-Continual-Learning-Fabric-for-Planetary-Climate-Adaptation/actions/workflows/ci.yml/badge.svg)
 ![Python](https://img.shields.io/badge/python-3.11-blue.svg)
@@ -69,6 +69,15 @@ One PPO agent per region coordinates adaptive responses to local climate shifts.
 
 ## Results
 
+### Training Convergence
+![Training Curves](results/figures/training_curves.png)
+
+### Per-Region Performance
+![Regional Comparison](results/figures/regional_comparison.png)
+
+### Ablation Table
+![Ablation Table](results/figures/ablation_table.png)
+
 | Condition | RMSE | Fairness Score |
 |-----------|:----:|:--------------:|
 | Federated only | 1.1041 | 0.9988 |
@@ -82,6 +91,7 @@ One PPO agent per region coordinates adaptive responses to local climate shifts.
 - Regional fairness score of **0.9997** — near-perfect equity across all nodes
 - EWC prevented catastrophic forgetting across all 8 training rounds
 - All 3 regions converged within 0.01 RMSE of each other
+
 ---
 
 ## Ablation Matrix
@@ -157,13 +167,16 @@ pytest tests/ -v
 ---
 
 ## Test Suite
-29 passed in 25.76s
-tests/unit/test_pinn.py                    5 tests  ✓
-tests/unit/test_ewc.py                     4 tests  ✓
-tests/unit/test_metrics.py                 7 tests  ✓
-tests/unit/test_marl.py                    6 tests  ✓
-tests/integration/test_data_pipeline.py    5 tests  ✓
-tests/integration/test_federated_round.py  2 tests  ✓
+
+| Test File | Tests | Status |
+|-----------|:-----:|:------:|
+| tests/unit/test_pinn.py | 5 | ✓ |
+| tests/unit/test_ewc.py | 4 | ✓ |
+| tests/unit/test_metrics.py | 7 | ✓ |
+| tests/unit/test_marl.py | 6 | ✓ |
+| tests/integration/test_data_pipeline.py | 5 | ✓ |
+| tests/integration/test_federated_round.py | 2 | ✓ |
+| **Total** | **29** | **All passing** |
 
 ---
 
