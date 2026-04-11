@@ -73,26 +73,26 @@ One PPO agent per region coordinates adaptive responses to local climate shifts.
 |-----------|:----:|:--------------:|
 | Federated only | 1.1041 | 0.9988 |
 | Fed + EWC | 1.1068 | 0.9992 |
-| **Full model (Fed + EWC + PINN)** | **1.0160** | **0.9997** |
+| Fed + EWC + PINN | 1.0160 | 0.9997 |
+| **Full model (+ MARL)** | **1.0772** | **0.9997** |
 
 **Key findings:**
 - PINN physics constraints reduced RMSE by **8.7%** vs federated-only baseline
-- Regional fairness score of **0.9997** — near-perfect equity across all 3 geographic nodes
-- EWC successfully prevented catastrophic forgetting across 8 training rounds
-- All 3 regions converged within 0.01 RMSE of each other (NA: 1.016, EU: 1.016, AP: 1.016)
-
+- MARL agents successfully coordinating across 3 geographic regions
+- Regional fairness score of **0.9997** — near-perfect equity across all nodes
+- EWC prevented catastrophic forgetting across all 8 training rounds
+- All 3 regions converged within 0.01 RMSE of each other
 ---
 
 ## Ablation Matrix
 
-| Condition | Federated | EWC | PINN | MARL |
-|-----------|:---------:|:---:|:----:|:----:|
-| Centralized baseline | — | — | — | — |
-| + Federated | ✓ | — | — | — |
-| + EWC | ✓ | ✓ | — | — |
-| + PINN | ✓ | ✓ | ✓ | — |
-| Full model | ✓ | ✓ | ✓ | ✓ |
-
+| Condition | Federated | EWC | PINN | MARL | RMSE |
+|-----------|:---------:|:---:|:----:|:----:|:----:|
+| Centralized baseline | — | — | — | — | — |
+| + Federated | ✓ | — | — | — | 1.1041 |
+| + EWC | ✓ | ✓ | — | — | 1.1068 |
+| + PINN | ✓ | ✓ | ✓ | — | 1.0160 |
+| Full model | ✓ | ✓ | ✓ | ✓ | 1.0772 |
 ---
 
 ## Project Structure
@@ -187,6 +187,7 @@ tests/integration/test_federated_round.py  2 tests  ✓
 | Experiment tracking | Weights & Biases (optional) |
 | Cloud training | AWS SageMaker (Graviton) |
 | Testing | pytest + pytest-cov |
+| Multi-Agent RL | PPO (custom actor-critic) |
 
 ---
 
