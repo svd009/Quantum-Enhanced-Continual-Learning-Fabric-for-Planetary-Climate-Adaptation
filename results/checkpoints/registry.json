@@ -1,0 +1,9 @@
+[
+  {
+    "path": "results\\checkpoints\\ckpt_round0001__20260412_233855.pt",
+    "round": 1,
+    "rmse": 0.95,
+    "timestamp": "20260412_233855",
+    "tag": ""
+  }
+]
