@@ -21,6 +21,13 @@ class FederatedServer:
         self.global_model = ClimatePINN(cfg).to(device)
         self.history: List[Dict[str, Any]] = []
         self.marl_enabled = cfg.get("marl", {}).get("enabled", False)
+
+        from ..utils.checkpointing import CheckpointManager
+        self.ckpt = CheckpointManager(
+            save_dir="results/checkpoints",
+            keep_best=3,
+            save_every=cfg.logging.get("save_every", 5),
+        )
         self.agents = {}
         self.agent_obs = {}
 
@@ -114,6 +121,9 @@ class FederatedServer:
             round_metrics.update(val_metrics)
             self.history.append(round_metrics)
 
+            if self.ckpt.should_save(round_idx):
+                self.ckpt.save(self.global_model, round_idx, val_metrics)
+
             # Update regional RMSEs
             for client in clients:
                 regional_rmses[client.client_id] = val_metrics.get("rmse", 1.0)
@@ -137,5 +147,6 @@ class FederatedServer:
 
             print(f"  Val RMSE: {val_metrics.get('rmse', 0):.4f}\n")
 
+        self.ckpt.save_final(self.global_model, self.history, self.history[-1])
         print("Training complete.")
         return self.history
