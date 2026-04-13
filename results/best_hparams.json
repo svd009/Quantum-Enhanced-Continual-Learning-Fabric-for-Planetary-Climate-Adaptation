@@ -1,0 +1,6 @@
+{
+  "learning_rate": 0.01,
+  "ewc_lambda": 5000,
+  "pde_weight": 0.1,
+  "rmse": 1.0656582117080688
+}
