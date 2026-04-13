@@ -138,6 +138,10 @@ One PPO agent per region coordinates adaptive responses to local climate shifts.
 ├── tests/
 │   ├── unit/                   # 21 unit tests
 │   └── integration/            # 8 integration tests
+├── sagemaker/
+│   ├── train.py                # SageMaker training entry point
+│   ├── deploy.py               # Launch job on AWS
+│   └── requirements.txt        # SageMaker dependencies
 └── results/figures/            # Generated charts and ablation tables
 ```
 
