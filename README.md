@@ -7,13 +7,14 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)
 ![Tests](https://img.shields.io/badge/tests-29%20passing-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
+
 ---
 
 ## Overview
 
 Most climate models are trained on centralized data. This project takes a different approach — training across **3 geographic regions simultaneously** (North America, Europe, Asia-Pacific) without ever moving raw data, while actively preventing the model from forgetting earlier climate patterns as distributions shift over time.
 
-Built to production-grade standards with a full ablation suite, 29 passing unit and integration tests, reproducible configs, and AWS SageMaker integration.
+Built to production-grade standards with a full ablation suite, 29 passing unit and integration tests, hyperparameter search, model checkpointing, W&B experiment tracking, and AWS SageMaker deployment.
 
 ---
 
@@ -24,28 +25,28 @@ Climate Data (ERA5 / Synthetic)
          │
          ▼
 ┌─────────────────────────────────────────┐
-│         Federated Server (FedAvg)       │
+│         Federated Server (FedAvg)        │
 │                                         │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ │
-│  │ Client 1 │ │ Client 2 │ │ Client 3 │ │
-│  │N. America│ │  Europe  │ │Asia-Pac. │ │
-│  └────┬─────┘ └────┬─────┘ └────┬─────┘ │
-│       └─────────────┴─────────────┘     │
-│                     │                   │
-│              FedAvg Aggregation         │
-│              EWC (Anti-Forgetting)      │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐│
+│  │ Client 1 │ │ Client 2 │ │ Client 3 ││
+│  │N. America│ │  Europe  │ │Asia-Pac. ││
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘│
+│       └─────────────┴─────────────┘      │
+│                     │                    │
+│              FedAvg Aggregation          │
+│              EWC (Anti-Forgetting)       │
 └─────────────────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────────┐
-│     Physics-Informed Neural Network     │
-│   PDE Residual Loss (Mass + Energy)     │
+│     Physics-Informed Neural Network      │
+│   PDE Residual Loss (Mass + Energy)      │
 └─────────────────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────────┐
-│        Multi-Agent RL (PPO)             │
-│   One Agent per Geographic Region       │
+│        Multi-Agent RL (PPO)              │
+│   One Agent per Geographic Region        │
 └─────────────────────────────────────────┘
 ```
 
@@ -94,6 +95,19 @@ One PPO agent per region coordinates adaptive responses to local climate shifts.
 
 ---
 
+## Hyperparameter Search
+
+Grid search across 8 combinations — best configuration found:
+
+| Parameter | Best Value | Search Range |
+|-----------|:----------:|:------------:|
+| Learning rate | 0.01 | 0.01, 0.001, 0.0001 |
+| EWC lambda | 5000 | 1000, 5000, 10000 |
+| PDE weight | 0.1 | 0.01, 0.1, 0.5 |
+| **Best RMSE** | **1.0657** | — |
+
+---
+
 ## Ablation Matrix
 
 | Condition | Federated | EWC | PINN | MARL | RMSE |
@@ -103,6 +117,7 @@ One PPO agent per region coordinates adaptive responses to local climate shifts.
 | + EWC | ✓ | ✓ | — | — | 1.1068 |
 | + PINN | ✓ | ✓ | ✓ | — | 1.0160 |
 | Full model | ✓ | ✓ | ✓ | ✓ | 1.0772 |
+
 ---
 
 ## Project Structure
@@ -111,6 +126,7 @@ One PPO agent per region coordinates adaptive responses to local climate shifts.
 ├── src/
 │   ├── data/
 │   │   ├── synthetic.py        # ERA5-like data generator (no API key needed)
+│   │   ├── era5_loader.py      # Real ERA5 CDS API loader with fallback
 │   │   └── preprocessing.py    # Normalization, splits, DataLoaders
 │   ├── models/
 │   │   ├── backbone.py         # Fourier feature MLP backbone
@@ -125,24 +141,34 @@ One PPO agent per region coordinates adaptive responses to local climate shifts.
 │   │   ├── env.py              # Multi-agent climate environment
 │   │   ├── agents.py           # PPO actor-critic agents
 │   │   └── rewards.py          # Accuracy + fairness reward functions
-│   └── evaluation/
-│       ├── metrics.py          # RMSE, MAE, Skill Score, Fairness
-│       ├── forgetting.py       # Backward/Forward Transfer metrics
-│       └── ablation.py         # Full ablation runner
-├── configs/                    # OmegaConf YAML experiment configs
+│   ├── evaluation/
+│   │   ├── metrics.py          # RMSE, MAE, Skill Score, Fairness
+│   │   ├── forgetting.py       # Backward/Forward Transfer metrics
+│   │   └── ablation.py         # Full ablation runner
+│   └── utils/
+│       ├── config.py           # OmegaConf config loading
+│       ├── logging.py          # W&B + console experiment logger
+│       └── checkpointing.py    # Model checkpoint manager
+├── sagemaker/
+│   ├── train.py                # SageMaker training entry point
+│   ├── deploy.py               # Launch job on AWS
+│   └── requirements.txt        # SageMaker dependencies
+├── configs/                    # YAML configs for all experiments
 ├── scripts/
 │   ├── run_experiment.py       # Main training entry point
-│   └── run_ablation.py         # Ablation matrix runner
+│   ├── run_ablation.py         # Ablation matrix runner
+│   ├── hparam_search.py        # Hyperparameter grid search
+│   └── download_era5.py        # ERA5 data downloader
 ├── notebooks/
 │   └── results_analysis.py     # Results visualization and charts
 ├── tests/
 │   ├── unit/                   # 21 unit tests
 │   └── integration/            # 8 integration tests
-├── sagemaker/
-│   ├── train.py                # SageMaker training entry point
-│   ├── deploy.py               # Launch job on AWS
-│   └── requirements.txt        # SageMaker dependencies
-└── results/figures/            # Generated charts and ablation tables
+└── results/
+    ├── figures/                # Training curves, ablation charts
+    ├── checkpoints/            # Model checkpoints + final model
+    ├── hparam_results.csv      # Hyperparameter search results
+    └── best_hparams.json       # Best hyperparameter configuration
 ```
 
 ---
@@ -158,6 +184,9 @@ pip install -r requirements.txt
 # Run with synthetic data (no API key needed)
 python scripts/run_experiment.py --synthetic --n-years 5
 
+# Run hyperparameter search
+python scripts/hparam_search.py --n-years 3 --quick
+
 # Run full ablation suite
 python scripts/run_ablation.py --output results/ablation_table.csv
 
@@ -167,6 +196,48 @@ python notebooks/results_analysis.py
 # Run all tests
 pytest tests/ -v
 ```
+
+---
+
+## ERA5 Real Data Setup
+
+```bash
+# Check credentials
+python scripts/download_era5.py --check-credentials
+
+# Download data (requires free CDS API key)
+python scripts/download_era5.py --regions north_america europe asia_pacific --years 2000-2020
+```
+
+Get your free API key at [https://cds.climate.copernicus.eu](https://cds.climate.copernicus.eu)
+
+---
+
+## SageMaker Deployment
+
+```bash
+pip install sagemaker boto3
+
+python sagemaker/deploy.py \
+    --role arn:aws:iam::YOUR_ACCOUNT:role/SageMakerRole \
+    --bucket your-fedclimate-bucket \
+    --instance ml.c5.2xlarge \
+    --n-years 20 \
+    --num-rounds 50
+```
+
+See [sagemaker/README.md](sagemaker/README.md) for full setup instructions.
+
+---
+
+## Experiment Tracking (W&B)
+
+```bash
+pip install wandb
+wandb login
+```
+
+Set `use_wandb: true` in `configs/experiment.yaml` to enable full experiment tracking with loss curves, per-region metrics, and ablation tables.
 
 ---
 
@@ -181,6 +252,8 @@ pytest tests/ -v
 | tests/integration/test_data_pipeline.py | 5 | ✓ |
 | tests/integration/test_federated_round.py | 2 | ✓ |
 | **Total** | **29** | **All passing** |
+
+> Run locally with `pytest tests/ -v`
 
 ---
 
@@ -201,10 +274,11 @@ pytest tests/ -v
 | Model training | PyTorch 2.0+ |
 | Climate data | xarray, netCDF4 |
 | Config management | OmegaConf |
-| Experiment tracking | Weights & Biases (optional) |
-| Cloud training | AWS SageMaker (Graviton) |
+| Experiment tracking | Weights & Biases |
+| Cloud training | AWS SageMaker |
 | Testing | pytest + pytest-cov |
 | Multi-Agent RL | PPO (custom actor-critic) |
+| CI/CD | GitHub Actions |
 
 ---
 
@@ -217,3 +291,9 @@ pytest tests/ -v
 | sp | Surface pressure | Pa |
 | u10 | 10m U-wind component | m/s |
 | v10 | 10m V-wind component | m/s |
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
