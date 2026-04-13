@@ -91,10 +91,33 @@ def main():
         eval_fn=evaluate,
     )
 
-    # Log final results
+    # Log all rounds to W&B
+    for round_metrics in history:
+        step = round_metrics.get("round", 0)
+        exp_logger.log(
+            {k: v for k, v in round_metrics.items() if isinstance(v, float)},
+            step=step,
+        )
+
+    # Log final summary
     final = history[-1]
-    logger.info(f"Final RMSE: {final.get('rmse', 'N/A'):.4f}")
-    logger.info(f"Final MAE:  {final.get('mae', 'N/A'):.4f}")
+    exp_logger.log_summary({
+        "final_rmse": final.get("rmse", 0),
+        "final_mae":  final.get("mae", 0),
+    })
+
+    # Log figures if they exist
+    import os
+    for fig_name, fig_path in [
+        ("training_curves",     "results/figures/training_curves.png"),
+        ("regional_comparison", "results/figures/regional_comparison.png"),
+        ("ablation_table",      "results/figures/ablation_table.png"),
+    ]:
+        if os.path.exists(fig_path):
+            exp_logger.log_figure(fig_name, fig_path)
+
+    logger.info("Final RMSE: " + str(round(final.get("rmse", 0), 4)))
+    logger.info("Final MAE:  " + str(round(final.get("mae", 0), 4)))
 
     exp_logger.finish()
     logger.info("Done.")
