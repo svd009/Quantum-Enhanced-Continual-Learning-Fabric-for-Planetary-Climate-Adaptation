@@ -25,28 +25,28 @@ Climate Data (ERA5 / Synthetic)
          │
          ▼
 ┌─────────────────────────────────────────┐
-│         Federated Server (FedAvg)        │
+│         Federated Server (FedAvg)       │
 │                                         │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐│
-│  │ Client 1 │ │ Client 2 │ │ Client 3 ││
-│  │N. America│ │  Europe  │ │Asia-Pac. ││
-│  └────┬─────┘ └────┬─────┘ └────┬─────┘│
-│       └─────────────┴─────────────┘      │
-│                     │                    │
-│              FedAvg Aggregation          │
-│              EWC (Anti-Forgetting)       │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ │
+│  │ Client 1 │ │ Client 2 │ │ Client 3 │ │
+│  │N. America│ │  Europe  │ │Asia-Pac. │ │
+│  └────┬─────┘ └────┬─────┘ └────┬─────┘ │
+│       └─────────────┴─────────────┘     │
+│                     │                   │
+│              FedAvg Aggregation         │
+│              EWC (Anti-Forgetting)      │
 └─────────────────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────────┐
-│     Physics-Informed Neural Network      │
-│   PDE Residual Loss (Mass + Energy)      │
+│     Physics-Informed Neural Network     │
+│   PDE Residual Loss (Mass + Energy)     │
 └─────────────────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────────┐
-│        Multi-Agent RL (PPO)              │
-│   One Agent per Geographic Region        │
+│        Multi-Agent RL (PPO)             │
+│   One Agent per Geographic Region       │
 └─────────────────────────────────────────┘
 ```
 
